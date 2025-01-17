@@ -1,18 +1,35 @@
-<script setup lang="ts">
-defineProps<{
-  msg: string
-}>()
-</script>
-
 <template>
-  <div class="greetings">
-    <h1 class="text-4xl font-bold text-blue-500">¡Tailwind está funcionando!</h1>
-    <h3>
-      You’ve successfully created a project with
-      <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
-      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>. What's next?
-    </h3>
-  </div>
+  <ul class="divide-y divide-gray-200">
+    <li v-for="person in people" :key="person.email" class="py-4 flex">
+      <img class="size-10 rounded-full" :src="person.image" alt="" />
+      <div class="ml-3">
+        <p class="text-sm font-medium text-gray-900">{{ person.name }}</p>
+        <p class="text-sm text-red-500">{{ person.email }}</p>
+      </div>
+    </li>
+  </ul>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+const people = [
+  {
+    name: 'Calvin Hawkins',
+    email: 'calvin.hawkins@example.com',
+    image:
+      'https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  },
+  {
+    name: 'Kristen Ramos',
+    email: 'kristen.ramos@example.com',
+    image:
+      'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  },
+  {
+    name: 'Ted Fox',
+    email: 'ted.fox@example.com',
+    image:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  },
+]
+
+</script>

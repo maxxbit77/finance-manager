@@ -7,19 +7,12 @@ import HelloWorld from './components/HelloWorld.vue'
   <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
+    <div>
       <HelloWorld msg="You did it well!!!!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      <div class="text-xl text-red">gola</div>
     </div>
   </header>
-
   <RouterView />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
