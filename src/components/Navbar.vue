@@ -20,7 +20,7 @@ const views = [
   <div class="">
     <div class="size-28"><img src="../assets/finances-logo.png" alt="finances-logo" /></div>
     <div class="py-8 flex justify-center items-center">
-      <nav class="border-2 w-16 rounded-lg py-3 flex flex-col items-center space-y-8">
+      <nav class="border-2 w-16 rounded-lg py-3 flex flex-col items-center space-y-8 bg-terciary">
         <div
           v-for="(item, index) in views"
           :key="index"
