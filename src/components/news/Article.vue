@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import type { Article } from '../../types/news'
 import axios from 'axios'
-import Image from './Image.vue'
+import Card from '../news/Card.vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { useNewsStore } from '../../stores/news'
+
 const newsStore = useNewsStore()
-const articles = ref(newsStore.articles)
+const articles = ref<Article[]>(newsStore.articles as Article[])
 
 async function fetchNews() {
   const url =
@@ -14,6 +16,7 @@ async function fetchNews() {
     if (response) {
       const newsStore = useNewsStore()
       newsStore.setArticles(response.data.articles)
+      articles.value = newsStore.articles
       console.log('Articles saved in store:', newsStore.articles)
     }
   } catch (error) {
@@ -21,17 +24,20 @@ async function fetchNews() {
   }
 }
 
+const firstColumn = computed(() => articles.value.slice(0, Math.ceil(articles.value.length / 2)))
+const secondColumn = computed(() => articles.value.slice(Math.ceil(articles.value.length / 2)))
+
 onMounted(() => {
   if (newsStore.articles.length === 0) {
     fetchNews()
+  } else {
+    articles.value = newsStore.articles
   }
 })
 </script>
 <template>
-  <div>
-    <template v-for="(article, index) in articles" :key="index">
-      {{ article }}
-      <Image :image="article.urlToImage" />
-    </template>
+  <div class="grid grid-cols-2 space-x-5">
+    <Card :articles="firstColumn" />
+    <Card :articles="secondColumn" />
   </div>
 </template>

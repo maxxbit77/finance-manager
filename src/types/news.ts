@@ -1,4 +1,4 @@
-export interface News {
+export interface Article {
   source: Source
   author: string
   title: string

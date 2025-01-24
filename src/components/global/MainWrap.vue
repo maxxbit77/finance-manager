@@ -2,8 +2,8 @@
 const props = withDefaults(defineProps<{}>(), {})
 </script>
 <template>
-  <div class="mt-14">
-    <div class="grid grid-cols-3 gap-4 h-full">
+  <div>
+    <div class="grid grid-cols-3 gap-x-16 h-full">
       <slot />
     </div>
   </div>

@@ -4,6 +4,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      height: {
+        screen: '100vh', // Altura completa del viewport
+      },
       colors: {
         primary: {
           light: '#42acd2',
