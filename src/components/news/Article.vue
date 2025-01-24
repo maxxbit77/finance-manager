@@ -19,7 +19,7 @@ async function fetchNews() {
       articles.value = newsStore.articles
       console.log('Articles saved in store:', newsStore.articles)
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error al obtener las noticias:', error.response?.data || error.message)
   }
 }

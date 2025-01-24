@@ -10,7 +10,7 @@ const props = defineProps<{
     <ul class="">
       <template v-for="(article, index) in articles" :key="index">
         <li>
-          <article class="border-2 p-2 rounded-lg mb-5">
+          <article class="border-2 p-2 rounded-lg mb-5 bg-slate-800">
             <a :href="article.url" target="_blank" rel="noopener noreferrer">
               <h3 v-if="article.title" class="font-bold text-2xl">{{ article.title }}</h3>
               <div class="flex justify-between items-center mt-2 w-full">
