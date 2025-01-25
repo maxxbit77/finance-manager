@@ -11,8 +11,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "noEmit": true, // Evita generar archivos transpilados en cualquier parte
+    "outDir": "./dist" // Por si decides compilar manualmente, define una salida
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
