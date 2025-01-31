@@ -9,20 +9,6 @@ import RadialChart from '../components/widgets/RadialChart.vue'
 import AreaChart from '../components/widgets/AreaChart.vue'
 import GaugeChart from '../components/widgets/GaugeChart.vue'
 import YoutubePlayer from '../components/global/YouTubePlayer.vue'
-
-// async function fetchData() {
-//   const url = 'https://sandbox-api.coinmarketcap.com/v1/content/posts/top'
-//   const headers = {
-//     'X-CMC_PRO_API_KEY': '98a1480d-bd6d-4124-81df-9bc947c847a7',
-//   }
-
-//   try {
-//     const response = await axiosHttpRequest(url, 'GET', undefined, headers)
-//     console.log('Datos recibidos:', response)
-//   } catch (error) {
-//     console.error('Error al obtener los datos:', error)
-//   }
-// }
 </script>
 
 <template>

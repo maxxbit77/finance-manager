@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 
@@ -8,7 +8,6 @@ onMounted(() => {
   isMounted.value = true
 })
 
-// Detecta cambios en la ruta y fuerza la recreación
 onBeforeRouteUpdate((to, from, next) => {
   isMounted.value = false
   next()
@@ -20,7 +19,6 @@ onBeforeRouteUpdate((to, from, next) => {
 
 <template>
   <div>
-    <!-- Solo se muestra el componente si `isMounted` es verdadero -->
     <YouTubePlayer v-if="isMounted" />
   </div>
 </template>
