@@ -13,6 +13,7 @@ const router = createRouter({
     { path: '/', component: HomeView },
     { path: '/resume', component: ResumeView },
     { path: '/crypto', component: CryptoView },
+    // { path: '/crypto/coin/:id', component: CoinDetailView },
     { path: '/my-portfolio', component: MyPortfolioView },
     { path: '/investment', component: InvestView },
     { path: '/profile', component: ProfileView },
