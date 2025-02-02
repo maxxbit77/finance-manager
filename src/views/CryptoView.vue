@@ -1,45 +1,57 @@
 <script setup lang="ts">
-import { axiosHttpRequest } from '../utils/api'
-import CryptoTable from '../components/table/Crypto.vue'
+import { ref, onMounted, computed, shallowRef } from 'vue'
+import CryptoTable from '../components/crypto/Table.vue'
+import RectanglesMap from '../components/crypto/RectanglesMap.vue'
+import { fetchCoinMarketCapData } from '../services/coinMarketCapService'
 import type { Coin } from '../types/cryptoCoin'
-import { onMounted, ref } from 'vue'
-
-interface ApiResponse {
-  data: Coin[]
-}
+import Spinner from '@/components/global/Spinner.vue'
+import LineChart from '@/components/widgets/LineChart.vue'
 
 const cryptoData = ref<Coin[]>([])
+const activeTab = ref('rectangle')
 
-async function fetchData() {
-  const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
-  const headers = {
-    'X-CMC_PRO_API_KEY': '98a1480d-bd6d-4124-81df-9bc947c847a7',
-  }
+const tabs = shallowRef([
+  { name: 'Hot Map', value: 'rectangle', component: RectanglesMap },
+  { name: 'Market Cap', value: 'list', component: CryptoTable },
+])
 
-  try {
-    const response = await axiosHttpRequest<ApiResponse>(url, 'GET', undefined, headers)
+const componenteActivo = computed(() => {
+  const tab = tabs.value.find((t) => t.value === activeTab.value)
+  return tab ? tab.component : null
+})
 
-    if (response && response.data) {
-      cryptoData.value = response.data // Asigna los datos a `cryptoData`
-    }
-    console.log('Datos recibidos:', response.data)
-  } catch (error) {
-    console.error('Error al obtener los datos:', error)
-  }
-}
-
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  cryptoData.value = await fetchCoinMarketCapData()
+  console.log('cryptoData', cryptoData.value)
 })
 </script>
-
 <template>
-  <div>
-    <h1 class="text-3xl">Today's Cryptocurrency Prices by Market Cap</h1>
+  <div class="relative">
+    <h1 class="text-3xl my-24">Today's Cryptocurrency Prices by Market Cap</h1>
+    <LineChart class="size-96" />
 
-    <div>
-      <!-- Usa `v-if` para verificar si `cryptoData` tiene elementos -->
-      <CryptoTable v-if="cryptoData.length > 0" :cryptoData="cryptoData" />
+    <div class="z-10 relative" v-if="cryptoData.length > 0">
+      <component :is="componenteActivo" v-if="componenteActivo" :cryptoData="cryptoData" />
+    </div>
+    <div v-else class="flex justify-center items-center my-auto">
+      <p class="text-cyan-500 text-5xl">Loading</p>
+      <Spinner class="w-16" />
+    </div>
+
+    <div class="flex ml-1.5 absolute top-24 -left-1.5 w-full z-0">
+      <button
+        v-for="tab in tabs"
+        :key="tab.value"
+        @click="activeTab = tab.value"
+        class="px-4 py-2 rounded-t-md transition-all"
+        :class="
+          activeTab === tab.value
+            ? 'bg-cyan-500 text-white '
+            : 'bg-gray-200 text-black scale-90 opacity-50'
+        "
+      >
+        {{ tab.name }}
+      </button>
     </div>
   </div>
 </template>
