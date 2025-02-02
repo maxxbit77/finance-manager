@@ -4,10 +4,9 @@ import { ref, onMounted } from 'vue'
 
 const chartRef = ref<SVGSVGElement | null>(null)
 
-// Parámetros del gráfico
 const width = 300
 const height = 200
-const needleValue = 75 // Valor del indicador (0-100)
+const needleValue = 75
 
 // Función para renderizar el gráfico
 const renderGauge = () => {
