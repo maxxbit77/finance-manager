@@ -27,8 +27,7 @@ onMounted(async () => {
 </script>
 <template>
   <div class="relative">
-    <h1 class="text-3xl my-24">Today's Cryptocurrency Prices by Market Cap</h1>
-    <LineChart class="size-96" />
+    <h1 class="text-3xl mt-12 mb-24">Today's Cryptocurrency Prices by Market Cap</h1>
 
     <div class="z-10 relative" v-if="cryptoData.length > 0">
       <component :is="componenteActivo" v-if="componenteActivo" :cryptoData="cryptoData" />
