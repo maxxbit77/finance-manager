@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import type { Coin } from '../types/cryptoCoin'
 import { ref, onMounted, computed, shallowRef } from 'vue'
 import CryptoTable from '../components/crypto/Table.vue'
 import RectanglesMap from '../components/crypto/RectanglesMap.vue'
-import { fetchCoinMarketCapData } from '../services/coinMarketCapService'
-import type { Coin } from '../types/cryptoCoin'
+import { fetchCoinMarketCapData } from '../services/useCoinMarketCapService'
 import Spinner from '@/components/global/Spinner.vue'
-import LineChart from '@/components/widgets/LineChart.vue'
 
 const cryptoData = ref<Coin[]>([])
 const activeTab = ref('rectangle')
@@ -21,8 +20,7 @@ const componenteActivo = computed(() => {
 })
 
 onMounted(async () => {
-  cryptoData.value = await fetchCoinMarketCapData()
-  console.log('cryptoData', cryptoData.value)
+  cryptoData.value = await fetchCoinMarketCapData('GET', 'cryptocurrency/listings/latest')
 })
 </script>
 <template>

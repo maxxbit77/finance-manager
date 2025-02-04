@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { axiosHttpRequest } from '../utils/api'
 import Balance from '../components/global/Balance.vue'
 import AddTransaction from '../components/global/AddTransaction.vue'
 import MainWrap from '../components/global/MainWrap.vue'

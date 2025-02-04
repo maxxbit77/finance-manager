@@ -40,21 +40,21 @@ const renderChart = () => {
   // Escalas
   const x = d3
     .scaleTime()
-    .domain(d3.extent(data, (d) => d.date) as [Date, Date])
+    .domain(d3.extent(data, (d: any) => d.date) as [Date, Date])
     .range([0, width])
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.value)!])
+    .domain([0, d3.max(data, (d: any) => d.value)!])
     .nice()
     .range([height, 0])
 
   // Área
   const area = d3
     .area<{ date: Date; value: number }>()
-    .x((d) => x(d.date))
+    .x((d: any) => x(d.date))
     .y0(height)
-    .y1((d) => y(d.value))
+    .y1((d: any) => y(d.value))
     .curve(d3.curveMonotoneX)
 
   // Ejes
@@ -76,8 +76,8 @@ const renderChart = () => {
   // Dibuja la línea sobre el área
   const line = d3
     .line<{ date: Date; value: number }>()
-    .x((d) => x(d.date))
-    .y((d) => y(d.value))
+    .x((d: any) => x(d.date))
+    .y((d: any) => y(d.value))
     .curve(d3.curveMonotoneX)
 
   g.append('path')

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { fetchCoinGeckoData } from '@/services/coinGeckoService'
+import { fetchCoinGeckoData } from '@/services/useCoinGeckoService'
 import type { Coin } from '../../types/cryptoCoin.ts'
 
 const props = defineProps<{ cryptoData: Coin[] }>()
@@ -38,7 +38,10 @@ const logoSizeFormat = (change: number) => {
 }
 
 onMounted(async () => {
-  coinGeckoData.value = await fetchCoinGeckoData()
+  coinGeckoData.value = await fetchCoinGeckoData(
+    'GET',
+    '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100',
+  )
 })
 </script>
 
