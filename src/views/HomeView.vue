@@ -28,9 +28,7 @@ import YoutubePlayer from '../components/global/YouTubePlayer.vue'
           </div>
         </div>
 
-        <div class="col-span-2 bg-terciary rounded-lg p-4">
-          <AreaChart title="S&P 500 Performance" />
-        </div>
+        <div class="col-span-2 bg-terciary rounded-lg p-4"></div>
 
         <div class="col-span-2 bg-terciary rounded-lg p-4">
           <GaugeChart />

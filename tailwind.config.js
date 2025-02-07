@@ -1,31 +1,39 @@
+const animate = require("tailwindcss-animate")
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: [],
-  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  darkMode: 'media', // or 'media' or 'class'
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{ts,tsx,vue}',
+    './components/**/*.{ts,tsx,vue}',
+    './app/**/*.{ts,tsx,vue}',
+    './src/**/*.{ts,tsx,vue}',
+	],
+  prefix: "",
   theme: {
-    extend: {
-      height: {
-        screen: '100vh', // Altura completa del viewport
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
       },
-      colors: {
-        primary: {
-          light: '#42acd2',
-          DEFAULT: '#358aa8',
-          dark: '#2e7893',
+    },
+    extend: {
+      keyframes: {
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
-        secondary: {
-          light: '#88ffcc',
-          DEFAULT: '#55ffb6',
-          dark: '#3bb37f',
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
         },
-        terciary: {
-          DEFAULT: '#1f2937',
-        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
+  plugins: [animate],
 }
