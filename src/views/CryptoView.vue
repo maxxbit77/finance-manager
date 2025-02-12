@@ -5,48 +5,62 @@ import CryptoTable from '@/components/crypto/Table.vue'
 import RectanglesMap from '@/components/crypto/RectanglesMap.vue'
 import { fetchCoinGeckoData } from '@/services/useCoinGeckoService'
 import Spinner from '@/components/global/Spinner.vue'
-import { Progress } from '@/components/ui/progress'
+import ProgressBar from '@/components/global/ProgressBar.vue'
 import type { Coin } from '@/types/cryptoCoin'
 
 const cryptoStore = useCryptoStore()
 const activeTab = ref('rectangle')
 const cryptoData = ref<Coin[]>([])
+
 const tabs = shallowRef([
   { name: 'Hot Map', value: 'rectangle', component: RectanglesMap },
   { name: 'Market Cap', value: 'list', component: CryptoTable },
 ])
 
-const componenteActivo = computed(() => {
+const activeComponent = computed(() => {
   const tab = tabs.value.find((t) => t.value === activeTab.value)
   return tab ? tab.component : null
 })
 
+const setCoinData = async () => {
+  const data = await fetchCoinGeckoData(
+    'GET',
+    '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100',
+  )
+  cryptoData.value = data
+  cryptoStore.setCryptoList(data)
+}
+
+const handleProgressBarCompleted = async () => {
+  console.log('completed')
+  setCoinData()
+}
+
 onMounted(async () => {
-  if (cryptoData.value.length <= 0) {
-    const data = await fetchCoinGeckoData(
-      'GET',
-      '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100',
-    )
-    cryptoData.value = data
-    cryptoStore.setCryptoList(data)
+  if (cryptoStore.cryptos.length > 0) {
+    cryptoData.value = cryptoStore.cryptos
+  } else {
+    setCoinData()
   }
 })
 </script>
 
 <template>
   <div class="relative">
+    <div class="h-4">
+      <ProgressBar @completed="handleProgressBarCompleted" />
+    </div>
     <h1 class="text-3xl mt-12 mb-24">Today's Cryptocurrency Prices by Market Cap</h1>
 
     <div class="z-10 relative" v-if="cryptoData.length > 0">
-      <Progress :model-value="33" />
-      <component :is="componenteActivo" v-if="componenteActivo" :cryptoData="cryptoData" />
+      <component :is="activeComponent" v-if="activeComponent" :cryptoData="cryptoData" />
     </div>
     <div v-else class="flex justify-center items-center my-auto">
       <p class="text-cyan-500 text-5xl">Loading</p>
       <Spinner class="w-16" />
     </div>
 
-    <div class="flex ml-1.5 absolute top-24 -left-1.5 w-full z-0">
+    <div class="flex ml-1.5 absolute top-40 -left-1.5 w-full z-0">
       <button
         v-for="tab in tabs"
         :key="tab.value"
