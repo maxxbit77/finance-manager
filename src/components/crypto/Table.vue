@@ -1,28 +1,19 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
-import type { Coin } from '../../types/cryptoCoin.ts'
+import type { Coin } from '@/types/cryptoCoin.ts'
 
 const props = defineProps<{
   cryptoData: Coin[]
 }>()
 
-const formatMarketCap = (value: number): string => {
-  if (value >= 1e12) return `${(value / 1e12).toFixed(2)}T`
-  if (value >= 1e9) return `${(value / 1e9).toFixed(2)}B`
-  if (value >= 1e6) return `${(value / 1e6).toFixed(2)}M`
-  return value.toFixed(2)
+const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(
+    value,
+  )
 }
 
-const formatVolume = (value: number): string => {
-  if (value >= 1e9) return `${(value / 1e9).toFixed(2)}B`
-  if (value >= 1e6) return `${(value / 1e6).toFixed(2)}M`
-  return value.toFixed(2)
-}
-
-const formatSupply = (value: number): string => {
-  if (value >= 1e9) return `${(value / 1e9).toFixed(2)}B`
-  if (value >= 1e6) return `${(value / 1e6).toFixed(2)}M`
-  return value.toFixed(2)
+const formatPrice = (value: number): string => {
+  return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 const getChangeClass = (percentChange: number): string => {
@@ -33,14 +24,15 @@ const tableHeaders = [
   'Rank',
   'Name',
   'Price',
-  '1h %',
   '24h %',
-  '7d %',
+  'High 24h',
+  'Low 24h',
   'Market Cap',
   'Volume (24h)',
   'Circulating Supply',
 ]
 </script>
+
 <template>
   <div class="max-h-screen overflow-auto rounded-lg">
     <table class="w-full bg-white border border-gray-200">
@@ -57,39 +49,36 @@ const tableHeaders = [
       </thead>
       <tbody class="divide-y divide-gray-200">
         <tr v-for="coin in cryptoData" :key="coin.id">
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ coin.cmc_rank }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ coin.name }} ({{ coin.symbol }})
+            {{ coin.market_cap_rank }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex items-center">
+            <img :src="coin.image" alt="Logo" class="w-6 h-6 mr-2" />
+            {{ coin.name }} ({{ coin.symbol.toUpperCase() }})
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            ${{ coin.quote.USD.price.toFixed(2) }}
+            {{ formatPrice(coin.current_price) }}
           </td>
           <td
-            class="px-6 py-4 whitespace-nowrap text-sm"
-            :class="getChangeClass(coin.quote.USD.percent_change_1h)"
+            class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+            :class="getChangeClass(coin.price_change_percentage_24h)"
           >
-            {{ coin.quote.USD.percent_change_1h.toFixed(2) }}%
-          </td>
-          <td
-            class="px-6 py-4 whitespace-nowrap text-sm"
-            :class="getChangeClass(coin.quote.USD.percent_change_24h)"
-          >
-            {{ coin.quote.USD.percent_change_24h.toFixed(2) }}%
-          </td>
-          <td
-            class="px-6 py-4 whitespace-nowrap text-sm"
-            :class="getChangeClass(coin.quote.USD.percent_change_7d)"
-          >
-            {{ coin.quote.USD.percent_change_7d.toFixed(2) }}%
+            {{ coin.price_change_percentage_24h.toFixed(2) }}%
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            ${{ formatMarketCap(coin.quote.USD.market_cap) }}
+            {{ formatPrice(coin.high_24h) }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            ${{ formatVolume(coin.quote.USD.volume_24h) }}
+            {{ formatPrice(coin.low_24h) }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ formatSupply(coin.circulating_supply) }} {{ coin.symbol }}
+            ${{ formatNumber(coin.market_cap) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            ${{ formatNumber(coin.total_volume) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ formatNumber(coin.circulating_supply) }} {{ coin.symbol.toUpperCase() }}
           </td>
         </tr>
       </tbody>

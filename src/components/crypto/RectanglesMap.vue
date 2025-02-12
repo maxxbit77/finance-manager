@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { fetchCoinGeckoData } from '@/services/useCoinGeckoService'
-import type { Coin } from '../../types/cryptoCoin.ts'
+import type { Coin } from '@/types/cryptoCoin'
 
 const props = defineProps<{ cryptoData: Coin[] }>()
 const coinGeckoData = ref<any[]>([])
@@ -11,19 +11,14 @@ const formattedCryptos = computed(() => {
     id: coin.id,
     name: coin.name,
     symbol: coin.symbol,
-    image: getCoinLogo(coin.symbol),
-    price: coin.quote?.USD?.price ?? 0,
-    change: coin.quote?.USD?.percent_change_24h ?? 0,
-    size: rectangleSizeFormat(coin.quote?.USD?.percent_change_24h),
-    fontSize: textSizeFormat(coin.quote?.USD?.percent_change_24h),
-    logoSize: logoSizeFormat(coin.quote?.USD?.percent_change_24h),
+    image: coin.image,
+    price: coin.current_price ?? 0,
+    change: coin.price_change_percentage_24h ?? 0,
+    size: rectangleSizeFormat(coin.price_change_percentage_24h),
+    fontSize: textSizeFormat(coin.price_change_percentage_24h),
+    logoSize: logoSizeFormat(coin.price_change_percentage_24h),
   }))
 })
-
-const getCoinLogo = (symbol: string) => {
-  const coin = coinGeckoData.value.find((c) => c.symbol.toLowerCase() === symbol.toLowerCase())
-  return coin ? coin.image : ''
-}
 
 const rectangleSizeFormat = (change: number) => {
   const size = Math.floor(Math.abs(change))

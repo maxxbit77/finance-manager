@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import type { Coin } from '../types/cryptoCoin'
 import { ref, onMounted, computed, shallowRef } from 'vue'
-import CryptoTable from '../components/crypto/Table.vue'
-import RectanglesMap from '../components/crypto/RectanglesMap.vue'
-import { fetchCoinMarketCapData } from '../services/useCoinMarketCapService'
+import { useCryptoStore } from '@/stores/cryptos'
+import CryptoTable from '@/components/crypto/Table.vue'
+import RectanglesMap from '@/components/crypto/RectanglesMap.vue'
+import { fetchCoinGeckoData } from '@/services/useCoinGeckoService'
 import Spinner from '@/components/global/Spinner.vue'
+import { Progress } from '@/components/ui/progress'
+import type { Coin } from '@/types/cryptoCoin'
 
-const cryptoData = ref<Coin[]>([])
+const cryptoStore = useCryptoStore()
 const activeTab = ref('rectangle')
-
+const cryptoData = ref<Coin[]>([])
 const tabs = shallowRef([
   { name: 'Hot Map', value: 'rectangle', component: RectanglesMap },
   { name: 'Market Cap', value: 'list', component: CryptoTable },
@@ -20,14 +22,23 @@ const componenteActivo = computed(() => {
 })
 
 onMounted(async () => {
-  cryptoData.value = await fetchCoinMarketCapData('GET', 'cryptocurrency/listings/latest')
+  if (cryptoData.value.length <= 0) {
+    const data = await fetchCoinGeckoData(
+      'GET',
+      '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100',
+    )
+    cryptoData.value = data
+    cryptoStore.setCryptoList(data)
+  }
 })
 </script>
+
 <template>
   <div class="relative">
     <h1 class="text-3xl mt-12 mb-24">Today's Cryptocurrency Prices by Market Cap</h1>
 
     <div class="z-10 relative" v-if="cryptoData.length > 0">
+      <Progress :model-value="33" />
       <component :is="componenteActivo" v-if="componenteActivo" :cryptoData="cryptoData" />
     </div>
     <div v-else class="flex justify-center items-center my-auto">
