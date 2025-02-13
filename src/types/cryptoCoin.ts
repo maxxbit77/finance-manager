@@ -26,3 +26,9 @@ export interface Coin {
   roi: null
   last_updated: Date
 }
+
+export interface CoinChart {
+  prices: Array<number[]>
+  market_caps: Array<number[]>
+  total_volumes: Array<number[]>
+}

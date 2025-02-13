@@ -3,7 +3,7 @@ import { ref, onMounted, computed, shallowRef } from 'vue'
 import { useCryptoStore } from '@/stores/cryptos'
 import CryptoTable from '@/components/crypto/Table.vue'
 import RectanglesMap from '@/components/crypto/RectanglesMap.vue'
-import { fetchCoinGeckoData } from '@/services/useCoinGeckoService'
+import { getCoinList } from '@/services/useCoinGeckoService'
 import Spinner from '@/components/global/Spinner.vue'
 import ProgressBar from '@/components/global/ProgressBar.vue'
 import type { Coin } from '@/types/cryptoCoin'
@@ -23,17 +23,9 @@ const activeComponent = computed(() => {
 })
 
 const setCoinData = async () => {
-  const data = await fetchCoinGeckoData(
-    'GET',
-    '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100',
-  )
+  const data = await getCoinList()
   cryptoData.value = data
   cryptoStore.setCryptoList(data)
-}
-
-const handleProgressBarCompleted = async () => {
-  console.log('completed')
-  setCoinData()
 }
 
 onMounted(async () => {
@@ -48,7 +40,7 @@ onMounted(async () => {
 <template>
   <div class="relative">
     <div class="h-4">
-      <ProgressBar @completed="handleProgressBarCompleted" />
+      <ProgressBar @completed="setCoinData" />
     </div>
     <h1 class="text-3xl mt-12 mb-24">Today's Cryptocurrency Prices by Market Cap</h1>
 

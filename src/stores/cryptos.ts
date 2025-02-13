@@ -1,17 +1,22 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import type { Coin } from '@/types/cryptoCoin'
 
 export const useCryptoStore = defineStore(
   'cryptos',
   () => {
-    const cryptos = ref([])
+    const cryptos = ref<Coin[]>([])
 
-    function setCryptoList(cryptoList: []) {
-      console.log('Articles in store:', cryptoList)
+    function setCryptoList(cryptoList: Coin[]) {
+      console.log('Cryptos in store:', cryptoList)
       cryptos.value = cryptoList
     }
 
-    return { cryptos, setCryptoList }
+    function getCryptoById(id: string): Coin | null {
+      return cryptos.value.find((coin) => coin.id === id) || null
+    }
+
+    return { cryptos, setCryptoList, getCryptoById }
   },
   {
     persist: true,

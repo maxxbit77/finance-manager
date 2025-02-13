@@ -27,7 +27,7 @@ export interface BaseChartProps<T extends Record<string, any>> {
   margin?: Spacing
   /**
    * Change the opacity of the non-selected field
-   * @default 0.2
+   * @default 0.5
    */
   filterOpacity?: number
   /**

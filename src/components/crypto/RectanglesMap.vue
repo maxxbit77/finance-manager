@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { fetchCoinGeckoData } from '@/services/useCoinGeckoService'
+import { computed, ref } from 'vue'
 import type { Coin } from '@/types/cryptoCoin'
+import Dialog from '@/components/global/Dialog.vue'
 
 const props = defineProps<{ cryptoData: Coin[] }>()
-const coinGeckoData = ref<any[]>([])
+
+const isDialogOpen = ref<boolean>(false)
+const selectedCoinId = ref<string>('')
+
+const openDialog = (id: string) => {
+  selectedCoinId.value = id
+  isDialogOpen.value = true
+}
 
 const formattedCryptos = computed(() => {
   return (props.cryptoData ?? []).map((coin) => ({
@@ -31,13 +38,6 @@ const textSizeFormat = (change: number) => {
 const logoSizeFormat = (change: number) => {
   return `${Math.max(10, Math.floor(Math.abs(change) * 2) + 30)}px`
 }
-
-onMounted(async () => {
-  coinGeckoData.value = await fetchCoinGeckoData(
-    'GET',
-    '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100',
-  )
-})
 </script>
 
 <template>
@@ -49,6 +49,7 @@ onMounted(async () => {
         class="coin-tile flex flex-col items-center justify-center text-white p-2 shadow-inner cursor-pointer outline-none"
         :class="[crypto.change > 0 ? 'bg-green-700 shadow-green-900' : 'bg-red-500 shadow-red-800']"
         :style="{ gridColumn: `span ${crypto.size}`, gridRow: `span ${crypto.size}` }"
+        @click="openDialog(crypto.id)"
       >
         <img
           v-if="crypto.image"
@@ -67,6 +68,13 @@ onMounted(async () => {
         </p>
       </div>
     </div>
+
+    <Dialog
+      v-if="isDialogOpen"
+      :open="isDialogOpen"
+      :id="selectedCoinId"
+      @close="isDialogOpen = false"
+    />
   </div>
 </template>
 

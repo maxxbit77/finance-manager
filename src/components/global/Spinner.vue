@@ -1,37 +1,45 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-    <circle fill="#37F7FF" stroke="#37F7FF" stroke-width="15" r="15" cx="40" cy="65">
-      <animate
-        attributeName="cy"
+    <radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)">
+      <stop offset="0" stop-color="#26FFFA"></stop>
+      <stop offset=".3" stop-color="#26FFFA" stop-opacity=".9"></stop>
+      <stop offset=".6" stop-color="#26FFFA" stop-opacity=".6"></stop>
+      <stop offset=".8" stop-color="#26FFFA" stop-opacity=".3"></stop>
+      <stop offset="1" stop-color="#26FFFA" stop-opacity="0"></stop>
+    </radialGradient>
+    <circle
+      transform-origin="center"
+      fill="none"
+      stroke="url(#a12)"
+      stroke-width="15"
+      stroke-linecap="round"
+      stroke-dasharray="200 1000"
+      stroke-dashoffset="0"
+      cx="100"
+      cy="100"
+      r="70"
+    >
+      <animateTransform
+        type="rotate"
+        attributeName="transform"
         calcMode="spline"
-        dur="1.1"
-        values="65;135;65;"
-        keySplines=".5 0 .5 1;.5 0 .5 1"
+        dur="2"
+        values="360;0"
+        keyTimes="0;1"
+        keySplines="0 0 1 1"
         repeatCount="indefinite"
-        begin="-.4"
-      ></animate>
+      ></animateTransform>
     </circle>
-    <circle fill="#37F7FF" stroke="#37F7FF" stroke-width="15" r="15" cx="100" cy="65">
-      <animate
-        attributeName="cy"
-        calcMode="spline"
-        dur="1.1"
-        values="65;135;65;"
-        keySplines=".5 0 .5 1;.5 0 .5 1"
-        repeatCount="indefinite"
-        begin="-.2"
-      ></animate>
-    </circle>
-    <circle fill="#37F7FF" stroke="#37F7FF" stroke-width="15" r="15" cx="160" cy="65">
-      <animate
-        attributeName="cy"
-        calcMode="spline"
-        dur="1.1"
-        values="65;135;65;"
-        keySplines=".5 0 .5 1;.5 0 .5 1"
-        repeatCount="indefinite"
-        begin="0"
-      ></animate>
-    </circle>
+    <circle
+      transform-origin="center"
+      fill="none"
+      opacity=".2"
+      stroke="#26FFFA"
+      stroke-width="15"
+      stroke-linecap="round"
+      cx="100"
+      cy="100"
+      r="70"
+    ></circle>
   </svg>
 </template>
