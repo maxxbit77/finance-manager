@@ -20,23 +20,21 @@ import YoutubePlayer from '../components/global/YouTubePlayer.vue'
       <h3 class="text-end font-bold text-4xl text-secondary">Markets</h3>
       <h3 class="text-end font-bold text-4xl text-secondary">Latest News</h3>
     </div>
-    <MainWrap>
-      <div class="flex flex-col gap-y-3">
-        <div class="col-span-1">
-          <div class="text-white">
-            <RadialChart title="Resume" />
-          </div>
-        </div>
-
-        <div class="col-span-2 bg-terciary rounded-lg p-4"></div>
-
-        <div class="col-span-2 bg-terciary rounded-lg p-4">
-          <GaugeChart />
+    <div class="flex flex-col gap-y-3">
+      <div class="col-span-1">
+        <div class="text-white">
+          <RadialChart title="Resume" />
         </div>
       </div>
-      <div class="col-span-2 overflow-y-auto max-h-dvh">
-        <NewsArticles />
+
+      <div class="col-span-2 bg-terciary rounded-lg p-4"></div>
+
+      <div class="col-span-2 bg-terciary rounded-lg p-4">
+        <GaugeChart />
       </div>
-    </MainWrap>
+    </div>
+    <div class="col-span-2 overflow-y-auto max-h-dvh">
+      <NewsArticles />
+    </div>
   </div>
 </template>

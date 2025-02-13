@@ -2,7 +2,7 @@
 import type { Article } from '../../types/news'
 import axios from 'axios'
 import Card from '../news/Card.vue'
-import { reactive, ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useNewsStore } from '../../stores/news'
 
 const newsStore = useNewsStore()
@@ -17,7 +17,6 @@ async function fetchNews() {
       const newsStore = useNewsStore()
       newsStore.setArticles(response.data.articles)
       articles.value = newsStore.articles
-      console.log('Articles saved in store:', newsStore.articles)
     }
   } catch (error: any) {
     console.error('Error al obtener las noticias:', error.response?.data || error.message)

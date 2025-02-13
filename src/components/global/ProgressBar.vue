@@ -5,7 +5,7 @@ import { ProgressIndicator, ProgressRoot } from 'radix-vue'
 const emit = defineEmits(['completed'])
 
 const progressValue = ref(0)
-const duration = 5 * 60 * 1000 // 5 minutos en milisegundos
+const duration = 60 * 60 * 1000 // 5 minutos en milisegundos
 const intervalTime = 200 // Intervalo de actualización (1 segundo)
 const saveInterval = 10 * 1000 // Guardar cada 10 segundos
 const step = 100 / (duration / intervalTime) // Incremento por cada intervalo

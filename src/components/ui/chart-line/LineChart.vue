@@ -39,7 +39,6 @@ const emits = defineEmits<{
 
 type KeyOfT = Extract<keyof T, string>
 type Data = (typeof props.data)[number]
-console.log('dataChart', props.data)
 
 const index = computed(() => props.index as KeyOfT)
 const colors = computed(() =>

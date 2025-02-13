@@ -32,6 +32,9 @@ const coinStoreData = ref<Coin | null>(null)
 const coinChart = ref<CoinChart | null>(null)
 const showContent = ref<boolean>(false)
 const isLoading = ref<boolean>(true)
+const chartData = ref<{ date: string; price: number }[]>([])
+const calculatorQuantity = ref<number>(1)
+const animatedValue = ref(0)
 
 const coin = computed(() => {
   if (coinStoreData.value && coinChart.value) {
@@ -43,7 +46,53 @@ const coin = computed(() => {
   return null
 })
 
-const chartData = ref<{ date: string; price: number }[]>([])
+const targetValue = computed(() => {
+  if (coin.value?.current_price && calculatorQuantity.value > 0) {
+    return calculatorQuantity.value * coin.value.current_price
+  }
+  return 0
+})
+
+watchEffect(() => {
+  const step = 50
+
+  const animate = () => {
+    if (Math.abs(animatedValue.value - targetValue.value) < 0.01) {
+      animatedValue.value = targetValue.value
+      return
+    }
+
+    animatedValue.value += (targetValue.value - animatedValue.value) / step
+    requestAnimationFrame(animate)
+  }
+
+  animate()
+})
+
+const calculator = computed(() => animatedValue.value.toFixed(2))
+
+const closeDialog = () => {
+  emit('close')
+  showContent.value = false
+}
+
+const chartLineColor = computed(() => {
+  if (coin.value && coin.value?.price_change_percentage_24h > 0) {
+    return ['green']
+  } else {
+    return ['red']
+  }
+})
+
+function convertTimestampToDate(timestamp: number): string {
+  const date = new Date(timestamp)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+
+  return `${day}-${month} ${hours}:${minutes}`
+}
 
 watchEffect(() => {
   if (coinChart.value && Array.isArray(coinChart.value.prices)) {
@@ -52,32 +101,7 @@ watchEffect(() => {
       price,
     }))
   }
-  console.log('chartData final:', chartData)
 })
-
-const closeDialog = () => {
-  emit('close')
-  showContent.value = false
-}
-
-function convertTimestampToDate(timestamp: number): string {
-  const date = new Date(timestamp)
-  const day = String(date.getDate()).padStart(2, '0') // Asegura que el día tenga dos dígitos
-  const month = String(date.getMonth() + 1).padStart(2, '0') // El mes es 0-indexado, sumamos 1
-  const hours = String(date.getHours()).padStart(2, '0') // Hora en formato de 2 dígitos
-  const minutes = String(date.getMinutes()).padStart(2, '0') // Minutos en formato de 2 dígitos
-
-  return `${day}-${month} ${hours}:${minutes}` // Devuelve la fecha en el formato deseado
-}
-
-function convertToDate(dateString: string): Date {
-  const [dayMonth, time] = dateString.split(' ') // '24-01' y '01:00'
-  const [day, month] = dayMonth.split('-') // '24' y '01'
-  const [hours, minutes] = time.split(':') // '01' y '00'
-
-  // Asegurarse de que el año es 2025, ya que no está en el formato original.
-  return new Date(`2025-${month}-${day}T${hours}:${minutes}:00`)
-}
 
 onMounted(async () => {
   if (props.id) {
@@ -102,8 +126,9 @@ onMounted(async () => {
         @click="closeDialog"
       />
       <DialogContent
-        class="coin-tile data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] min-h-[50vh] max-h-[85vh] w-[90vw] max-w-[800px] translate-x-[-50%] translate-y-[-50%] bg-sky-950 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none z-[100] text-white rounded-lg"
+        class="coin-tile data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[600px] max-h-[85vh] w-[90vw] max-w-[800px] translate-x-[-50%] translate-y-[-50%] bg-sky-950 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none z-[100] text-white rounded-lg"
       >
+        <!-- Coin title -->
         <DialogTitle class="text-mauve12 m-0 text-2xl font-semibold">
           <div v-if="coin" class="flex justify-center space-x-2">
             <img v-if="coin?.image" :src="coin.image" :alt="coin.name" class="size-8" />
@@ -112,22 +137,44 @@ onMounted(async () => {
           <span v-else class="opacity-0">Loading...</span>
         </DialogTitle>
 
+        <!-- Calculator -->
+
+        <!-- Data -->
         <DialogDescription
           class="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal flex justify-evenly items-center"
         >
           <div v-if="coin" class="flex flex-col justify-center items-center">
-            <p class="text-gray-500 text-xl">Range</p>
-            <span> {{ coin.market_cap_rank }}</span>
+            <p class="text-gray-400 text-xl">Range</p>
+            <span> # {{ coin.market_cap_rank }}</span>
           </div>
           <div v-if="coin" class="flex flex-col justify-center items-center">
-            <p class="text-gray-500 text-xl">Market Cap</p>
+            <p class="text-gray-400 text-xl">Market Cap</p>
             <span> {{ coin.market_cap }}</span>
           </div>
           <div v-if="coin" class="flex flex-col justify-center items-center">
-            <p class="text-gray-500 text-xl">Volume 24h</p>
-            <span> {{ coin.total_volume }}</span>
+            <p class="text-gray-400 text-xl">Price change 24h</p>
+            <span> {{ coin.price_change_percentage_24h.toFixed(2) }}%</span>
           </div>
         </DialogDescription>
+        <DialogDescription>
+          <div v-if="coin" class="flex justify-center items-center space-x-3">
+            <div class="relative group">
+              <Icon
+                icon="mdi-light:pencil"
+                class="absolute left-2 top-1/2 transform -translate-y-1/2 text-white size-7 group-focus-within:text-black"
+              />
+              <input
+                v-model="calculatorQuantity"
+                type="text"
+                class="pl-8 pr-2 py-1 text-center rounded-lg text-white bg-gray-500 focus:text-black focus:bg-white outline-none focus:font-bold"
+              />
+            </div>
+            <span class="text-gray-400"> {{ coin?.name }} = </span>
+            <span class="font-bold"> {{ calculator }} $ </span>
+          </div>
+        </DialogDescription>
+
+        <!-- Chart -->
         <DialogDescription>
           <LineChart
             v-if="chartData.length > 0"
@@ -135,27 +182,13 @@ onMounted(async () => {
             :data="chartData"
             :categories="['price']"
             index="date"
-            :colors="['green', 'red']"
+            :colors="chartLineColor"
             :showXAxis="true"
             :showYAxis="true"
             :showGridLine="true"
             :y-formatter="
               (tick) =>
                 typeof tick === 'number' ? `$ ${new Intl.NumberFormat('us').format(tick)}` : ''
-            "
-            :x-formatter="
-              (tick) => {
-                if (typeof tick === 'string') {
-                  const date = convertToDate(tick) // Utiliza la función de conversión
-                  return date.toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })
-                }
-                return String(tick)
-              }
             "
             :custom-tooltip="CustomChartTooltip"
           />

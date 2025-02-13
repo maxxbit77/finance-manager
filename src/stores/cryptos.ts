@@ -8,7 +8,6 @@ export const useCryptoStore = defineStore(
     const cryptos = ref<Coin[]>([])
 
     function setCryptoList(cryptoList: Coin[]) {
-      console.log('Cryptos in store:', cryptoList)
       cryptos.value = cryptoList
     }
 
